@@ -78,19 +78,19 @@ const cv = {
 			company: 'Syncwave',
 			role: 'Fundador / Lead Technical (Automatizaciones & Plataformas)',
 			period: 'Actualmente',
-			responsibilities: ['Desarrollé plataformas de gestión (talleres, farmacias, CRM).', 'Producticé procesos en plantillas y flujos.', 'Implementé OAuth2.0, webhooks y seguridad (vault, encriptación).', 'Diseñé bots, scripts y pipelines ETL; optimicé procesos reduciendo tiempos entre 70–90% (ej. 3.5h → 3min).'],
-		},
-		{
-			company: 'Directa Group',
-			role: 'Scraper / Raspador de Datos',
-			period: '2022 - 2023',
-			responsibilities: ['Automatización de extracción (Puppeteer, Axios).', 'Pipelines Node.js para ETL en NoSQL/SQL.', 'Mecanismos de retry y throttling para evitar bloqueos.'],
+			responsibilities: ['Desarrollé plataformas de gestión (talleres, farmacias, CRM).', 'Elaboré procesos en plantillas y flujos.', 'Implementé OAuth2.0, webhooks y seguridad (vault, encriptación).', 'Diseñé bots, scripts y pipelines ETL; optimicé procesos reduciendo tiempos entre 70–90% (ej. 3.5h → 3min).'],
 		},
 		{
 			company: 'Valery Software',
 			role: 'Desarrollador FullStack',
 			period: '',
 			responsibilities: ['Diseñé e implementé APIs RESTful y microservicios en Node.js para la gestión de transcripciones y almacenamiento de datos estructurados.', 'Desarrollé interfaces interactivas con React.js/Next.js, Material-UI y Tailwind, mejorando la experiencia de usuario y reduciendo tiempos de carga un 40%.', 'Configuré y optimicé bases de datos MySQL con Prisma, implementando migraciones, consultas complejas y paginación eficiente.', 'Lideré la migración de un sistema monolítico a una arquitectura modular, reduciendo costos de infraestructura y facilitando la escalabilidad.'],
+		},
+		{
+			company: 'Directa Group',
+			role: 'Scraper / Raspador de Datos',
+			period: '2022 - 2023',
+			responsibilities: ['Automatización de extracción (Puppeteer, Axios).', 'Pipelines Node.js para ETL en NoSQL/SQL.', 'Mecanismos de retry y throttling para evitar bloqueos.'],
 		},
 	],
 	skills: {

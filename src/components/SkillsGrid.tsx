@@ -55,7 +55,7 @@ export default function SkillsGrid({ skills = ['Node.js', 'TypeScript', 'React /
 						<div className="group-items" role="list" aria-label={`${groupName} lista`}>
 							{items.map((skill) => (
 								<div key={skill} role="listitem" className="skill-card" tabIndex={0} aria-label={skill}>
-									<p className="skill-label">{skill}</p>
+									<p>{skill}</p>
 								</div>
 							))}
 						</div>
