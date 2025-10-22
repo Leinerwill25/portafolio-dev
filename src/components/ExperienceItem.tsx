@@ -3,15 +3,13 @@
 import React from 'react';
 
 type Props = {
-	title: string; // e.g. "Syncwave — Fundador / Lead Technical (Automatizaciones & Plataformas)"
+	title: string;
 	company: string;
-	dateRange?: string; // e.g. "2022 - 2023" or "Actualmente"
-	bullets: string[]; // responsabilidades
+	dateRange?: string;
+	bullets: string[];
 };
 
-/** heurística simple para derivar un % de "impact" desde el texto de las responsabilidades */
 function deriveImpactPct(bullets: string[]): number {
-	// buscar porcentajes o rangos "70–90%" "70-90%" o números aislados
 	const text = bullets.join(' ').replace(/\s+/g, ' ');
 	const rangeMatch = text.match(/(\d{1,3})\s*(?:–|-|to)\s*(\d{1,3})\s*%?/);
 	if (rangeMatch) {
@@ -23,15 +21,12 @@ function deriveImpactPct(bullets: string[]): number {
 		const v = Number(pctMatch[1]);
 		if (!Number.isNaN(v)) return Math.min(100, v);
 	}
-	// si detecta palabras como "optim" "reduciendo" "mejor" favorecer impacto
 	if (/(reduci|optimi|mejor|aument|aceler)/i.test(text)) return 78;
-	// default conservador
 	return 56;
 }
 
-/** normaliza longitudes de bullets para barras (0..1) */
 function computeLengths(bullets: string[]) {
-	const lens = bullets.map((b) => Math.min(1, b.length / 120)); // cap para visual
+	const lens = bullets.map((b) => Math.min(1, b.length / 120));
 	return lens;
 }
 
@@ -90,7 +85,6 @@ export default function ExperienceItem({ title, company, dateRange = '', bullets
 						<li key={i} className="xp-item" role="listitem">
 							<div className="xp-item-left">
 								<span className="bullet-icon" aria-hidden>
-									{/* small check-circle */}
 									<svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true">
 										<circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.4" strokeOpacity="0.12" />
 										<path d="M9 12.5l1.8 1.8L15 10" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -101,7 +95,6 @@ export default function ExperienceItem({ title, company, dateRange = '', bullets
 							<div className="xp-item-main">
 								<p className="xp-item-text">{b}</p>
 
-								{/* mini bar chart representing 'weight' of the responsibility */}
 								<div className="mini-bar" aria-hidden>
 									<div className="mini-track">
 										<div className="mini-fill" style={{ width: `${Math.round(lengths[i] * 100)}%` }} />
@@ -115,26 +108,32 @@ export default function ExperienceItem({ title, company, dateRange = '', bullets
 
 			<style jsx>{`
 				:root {
-					--neo-surface: #f8fbfd;
-					--neo-surface-2: #eef6fb;
-					--muted: #6b7280;
-					--text: #0f172a;
-					--accent: #6366f1;
-					--accent-2: #06b6d4;
-					--shadow-dark: rgba(124, 139, 156, 0.12);
-					--shadow-light: rgba(255, 255, 255, 0.95);
-					--card-radius: 14px;
+					/* dark-first tokens to match blue-dark layout */
+					--bg: #071022;
+					--card-surface: linear-gradient(180deg, rgba(12, 18, 30, 0.95), rgba(6, 12, 22, 0.95));
+					--card-edge: rgba(255, 255, 255, 0.02);
+					--neo-text: #dceeff;
+					--neo-muted: #8fa7c7;
+					--accent: #7b82ff;
+					--accent-2: #22c1d8;
+					--shadow-dark-lg: rgba(2, 6, 18, 0.7);
+					--shadow-light-lg: rgba(255, 255, 255, 0.03);
+					--inner-shadow: rgba(0, 0, 0, 0.45);
 				}
 
+				/* principal card (dark friendly) */
 				.xp-card {
-					background: linear-gradient(180deg, var(--neo-surface), var(--neo-surface-2));
+					background: var(--card-surface);
 					border-radius: 18px;
 					padding: 18px;
-					border: 1px solid rgba(255, 255, 255, 0.6);
-					box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.06), inset -6px -6px 12px rgba(255, 255, 255, 0.95), 10px 10px 26px var(--shadow-dark), -8px -8px 20px var(--shadow-light);
-					display: flex;
-					flex-direction: column;
-					gap: 12px;
+					border: 1px solid rgba(255, 255, 255, 0.02);
+					box-shadow: inset 6px 6px 18px rgba(0, 0, 0, 0.6), inset -6px -6px 18px rgba(255, 255, 255, 0.02), 8px 12px 28px rgba(0, 0, 0, 0.6);
+					transition: transform 240ms cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 240ms ease;
+				}
+				/* hover: dark lift (NO white) */
+				.xp-card:hover {
+					transform: translateY(-8px);
+					box-shadow: inset 4px 4px 12px rgba(0, 0, 0, 0.6), inset -3px -3px 10px rgba(255, 255, 255, 0.02), 22px 26px 60px rgba(0, 0, 0, 0.6), -6px -6px 24px rgba(255, 255, 255, 0.01);
 				}
 
 				.xp-header {
@@ -148,7 +147,7 @@ export default function ExperienceItem({ title, company, dateRange = '', bullets
 					margin: 0;
 					font-size: 1rem;
 					font-weight: 800;
-					color: var(--text);
+					color: var(--neo-text);
 					line-height: 1.05;
 				}
 
@@ -157,22 +156,20 @@ export default function ExperienceItem({ title, company, dateRange = '', bullets
 					display: flex;
 					gap: 8px;
 					align-items: center;
-					color: var(--muted);
+					color: var(--neo-muted);
 					font-weight: 600;
 					font-size: 0.9rem;
 				}
 
 				.company {
-					color: var(--muted);
+					color: var(--neo-muted);
 				}
-
 				.dot {
 					opacity: 0.5;
 					margin: 0 4px;
 				}
-
 				.date {
-					color: var(--muted);
+					color: var(--neo-muted);
 					font-size: 0.88rem;
 				}
 
@@ -186,12 +183,12 @@ export default function ExperienceItem({ title, company, dateRange = '', bullets
 				}
 
 				.company-icon {
-					color: #0b1220;
-					opacity: 0.14;
+					color: rgba(123, 129, 255, 0.08);
+					opacity: 0.9;
 				}
 				.calendar-icon {
-					color: #0b1220;
-					opacity: 0.12;
+					color: rgba(34, 193, 216, 0.06);
+					opacity: 0.9;
 				}
 
 				.xp-stats {
@@ -200,57 +197,71 @@ export default function ExperienceItem({ title, company, dateRange = '', bullets
 					align-items: center;
 				}
 
+				/* stats: dark glass style (no white bg) */
 				.stat {
 					display: flex;
 					gap: 8px;
 					align-items: center;
-					background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(243, 246, 255, 0.8));
-					padding: 8px 10px;
+					background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0));
+					padding: 10px 12px;
 					border-radius: 12px;
-					border: 1px solid rgba(255, 255, 255, 0.6);
-					box-shadow: 4px 4px 12px rgba(163, 177, 198, 0.04), -4px -4px 8px rgba(255, 255, 255, 0.9);
+					border: 1px solid rgba(255, 255, 255, 0.02);
+					box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.6), inset -2px -2px 6px rgba(255, 255, 255, 0.01), 8px 10px 18px rgba(0, 0, 0, 0.45);
+					color: var(--neo-text);
+					transition: transform 180ms ease, box-shadow 180ms ease;
+				}
+				/* subtle stat hover (dark highlight) */
+				.stat:hover {
+					transform: translateY(-3px);
+					box-shadow: inset 3px 3px 8px rgba(0, 0, 0, 0.65), inset -3px -3px 8px rgba(255, 255, 255, 0.01), 12px 14px 30px rgba(0, 0, 0, 0.6);
 				}
 
 				.stat-icon {
-					width: 20px;
-					height: 20px;
+					width: 18px;
+					height: 18px;
 					color: var(--accent);
-					opacity: 0.96;
+					opacity: 0.98;
 				}
 				.stat .stat-value {
 					display: block;
 					font-weight: 800;
-					color: var(--text);
+					color: var(--neo-text);
 					font-size: 0.98rem;
-					line-height: 1;
 				}
 				.stat .stat-label {
 					display: block;
 					font-size: 0.72rem;
-					color: var(--muted);
+					color: var(--neo-muted);
 					margin-top: 2px;
 				}
 
 				.xp-body {
-					margin-top: 6px;
+					margin-top: 8px;
 				}
 				.xp-list {
 					list-style: none;
 					padding: 0;
 					margin: 0;
 					display: grid;
-					gap: 8px;
+					gap: 10px;
 				}
 
+				/* each responsibility item uses dark card look, NOT white */
 				.xp-item {
 					display: flex;
 					gap: 12px;
 					align-items: flex-start;
-					padding: 10px;
+					padding: 12px 14px;
 					border-radius: 12px;
-					background: linear-gradient(180deg, #ffffff, #f6fbff);
-					border: 1px solid rgba(255, 255, 255, 0.6);
-					box-shadow: 6px 6px 16px rgba(2, 6, 23, 0.03), -6px -6px 12px rgba(255, 255, 255, 0.8);
+					background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0));
+					border: 1px solid rgba(255, 255, 255, 0.02);
+					box-shadow: 6px 8px 18px rgba(0, 0, 0, 0.5), -4px -4px 12px rgba(255, 255, 255, 0.01), inset 2px 2px 6px rgba(0, 0, 0, 0.5);
+					transition: transform 220ms cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 220ms ease;
+				}
+				/* hover: dark lift, subtle inner highlight (no white) */
+				.xp-item:hover {
+					transform: translateY(-5px);
+					box-shadow: 14px 18px 40px rgba(0, 0, 0, 0.6), -10px -10px 30px rgba(255, 255, 255, 0.02), inset 3px 3px 8px rgba(0, 0, 0, 0.6);
 				}
 
 				.xp-item-left {
@@ -262,7 +273,7 @@ export default function ExperienceItem({ title, company, dateRange = '', bullets
 				}
 				.xp-item-text {
 					margin: 0;
-					color: var(--text);
+					color: var(--neo-text);
 					font-size: 0.95rem;
 					line-height: 1.4;
 				}
@@ -271,75 +282,35 @@ export default function ExperienceItem({ title, company, dateRange = '', bullets
 					margin-top: 8px;
 				}
 				.mini-track {
-					height: 6px;
-					background: linear-gradient(90deg, rgba(11, 17, 34, 0.06), rgba(11, 17, 34, 0.02));
+					height: 7px;
+					background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
 					border-radius: 999px;
 					overflow: hidden;
+					box-shadow: inset 2px 2px 6px rgba(0, 0, 0, 0.6);
 				}
 				.mini-fill {
 					height: 100%;
-					background: linear-gradient(90deg, var(--accent), var(--accent-2));
+					background: linear-gradient(90deg, #00eaff, #7b2ff7, #ff00e0);
 					border-radius: 999px;
-					box-shadow: 8px 8px 20px rgba(99, 102, 241, 0.06), -6px -6px 16px rgba(255, 255, 255, 0.9);
+					box-shadow: 0 0 14px rgba(123, 47, 247, 0.4), 0 0 28px rgba(0, 234, 255, 0.3);
+					animation: flow 3s linear infinite;
 					transition: width 420ms cubic-bezier(0.2, 0.9, 0.3, 1);
 				}
 
-				/* Hover interactivity on item */
-				.xp-item:hover {
-					transform: translateY(-6px);
-					box-shadow: 18px 18px 44px rgba(99, 102, 241, 0.06), inset 3px 3px 8px rgba(163, 177, 198, 0.04);
-				}
-
-				/* Dark mode */
-				@media (prefers-color-scheme: dark) {
-					:root {
-						--neo-surface: #0b1220;
-						--neo-surface-2: #071021;
-						--muted: #94a3b8;
-						--text: #e6eef8;
-						--accent: #6366f1;
-						--accent-2: #06b6d4;
-					}
-					.xp-card {
-						background: linear-gradient(180deg, rgba(20, 28, 45, 0.9), rgba(10, 16, 28, 0.9));
-						border: 1px solid rgba(255, 255, 255, 0.02);
-						box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.6), inset -6px -6px 12px rgba(255, 255, 255, 0.02);
-					}
-					.xp-sub,
-					.date,
-					.company {
-						color: var(--muted);
-					}
-					.xp-item {
-						background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-						border: 1px solid rgba(255, 255, 255, 0.02);
-						box-shadow: none;
-					}
-					.xp-item-text {
-						color: var(--text);
-					}
-					.mini-fill {
-						box-shadow: none;
-					}
-					.stat {
-						background: rgba(255, 255, 255, 0.02);
-						border: 1px solid rgba(255, 255, 255, 0.02);
-						box-shadow: none;
-					}
-				}
-
-				/* Responsive */
+				/* small responsive tweaks */
 				@media (max-width: 720px) {
 					.xp-header {
 						flex-direction: column;
-						align-items: flex-start;
 						gap: 10px;
+						align-items: flex-start;
 					}
 					.xp-stats {
 						order: 3;
+						flex-wrap: wrap;
+						gap: 8px;
 					}
 					.stat {
-						padding: 6px 8px;
+						padding: 8px 10px;
 					}
 				}
 			`}</style>

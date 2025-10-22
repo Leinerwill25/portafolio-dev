@@ -52,45 +52,48 @@ function techMeta(t: string) {
 }
 
 export default function ProjectCard({ title, desc, tags = [], url, status = 'En desarrollo', useIcons = false, iconBaseUrl }: Props) {
+	const statusClass = `status-${slugify(status)}`;
+
 	return (
-		<motion.article className="project-card" role="article" aria-labelledby={`proj-${slugify(title)}`} tabIndex={0} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.18 }} whileHover={{ translateY: -6, scale: 1.004 }} whileFocus={{ translateY: -6, scale: 1.004 }} transition={{ duration: 0.36, ease: [0.2, 0.9, 0.3, 1] }}>
-			{/* Priority / status badge (top-right) */}
-			<div className={`status-badge status-${slugify(status)}`} aria-hidden>
-				<span className="status-dot" />
-				<span className="status-text">{status}</span>
-			</div>
-
-			{/* inner wrapper with additional padding so content never touches the outer border */}
+		<motion.article className="project-card" role="article" aria-labelledby={`proj-${slugify(title)}`} tabIndex={0} initial={{ opacity: 0, y: 8 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.18 }} whileHover={{ translateY: -8, scale: 1.01 }} whileFocus={{ translateY: -8, scale: 1.01 }} transition={{ duration: 0.32, ease: [0.2, 0.9, 0.3, 1] }}>
 			<div className="card-inner" role="group" aria-label={title}>
-				<div className="card-head">
-					<div className="head-content">
-						<h4 id={`proj-${slugify(title)}`} className="proj-title text-xl sm:text-2xl md:text-3xl font-bold text-neo-light mb-2">
-							{title}
-						</h4>
-						<p className="proj-sub">Proyecto · Implementación técnica</p>
+				{/* HEAD: title + subtitle and right side status */}
+				<header className="card-head">
+					<div className="head-left">
+						<div className="accent" aria-hidden />
+						<div className="title-wrap">
+							<h4 id={`proj-${slugify(title)}`} className="proj-title">
+								{title}
+							</h4>
+							<p className="proj-sub">Proyecto · Implementación técnica</p>
+						</div>
 					</div>
-				</div>
 
-				<div className="proj-body" aria-hidden={false}>
+					<div className={`status-wrap ${statusClass}`} aria-hidden>
+						<span className="status-dot" />
+						<span className="status-text">{status}</span>
+					</div>
+				</header>
+
+				{/* BODY: description + mini preview */}
+				<section className="proj-body">
 					<p className="proj-desc">{desc}</p>
 
-					<div className="proj-meta">
-						<div className="meta-left">
-							{/* placeholder for structured bullets or short summary */}
-							<p className="proj-excerpt" />
-						</div>
+					<div className="meta-row" aria-hidden>
+						<div className="meta-left">{/* reserved for short excerpt / metrics in the future */}</div>
 
-						<div className="meta-right" aria-hidden>
-							<div className="mini-neo">
+						<div className="meta-right">
+							<div className="mini-neo" aria-hidden>
 								<div className="mini-line" />
 								<div className="mini-line short" />
 								<div className="mini-dot" />
 							</div>
 						</div>
 					</div>
-				</div>
+				</section>
 
-				<div className="card-foot">
+				{/* FOOT: tags + actions */}
+				<footer className="card-foot">
 					<ul className="proj-tags" role="list" aria-label={`Tecnologías utilizadas en ${title}`}>
 						{tags.map((t) => {
 							const meta = techMeta(t);
@@ -99,8 +102,14 @@ export default function ProjectCard({ title, desc, tags = [], url, status = 'En 
 
 							return (
 								<li key={t} className="proj-tag" tabIndex={0} aria-label={meta.label} title={meta.label}>
-									<span className="tag-badge" aria-hidden="true" style={{ background: `linear-gradient(180deg, ${meta.color}33, ${meta.color}11)` }}>
+									<span
+										className="tag-badge"
+										aria-hidden="true"
+										style={{
+											background: `linear-gradient(180deg, ${hexWithAlpha(meta.color, 0.16)}, ${hexWithAlpha(meta.color, 0.06)})`,
+										}}>
 										{iconUrl ? (
+											// eslint-disable-next-line @next/next/no-img-element
 											<img src={iconUrl} alt="" className="tag-icon" aria-hidden="true" onError={(e) => (e.currentTarget.style.display = 'none')} />
 										) : (
 											<span className="tag-initials" style={{ background: meta.color }}>
@@ -117,14 +126,12 @@ export default function ProjectCard({ title, desc, tags = [], url, status = 'En 
 					<div className="actions">
 						{url ? (
 							<a className="project-link" href={url} target="_blank" rel="noopener noreferrer" aria-label={`Ver proyecto ${title} (se abre en nueva pestaña)`} title={url}>
-								<span className="link-inner">
-									Ver proyecto
-									<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
-										<path d="M14 3h7v7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-										<path d="M10 14L21 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-										<path d="M21 21H3V3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-									</svg>
-								</span>
+								<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" focusable="false">
+									<path d="M14 3h7v7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+									<path d="M10 14L21 3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+									<path d="M21 21H3V3" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+								</svg>
+								<span className="link-text">Ver proyecto</span>
 							</a>
 						) : (
 							<button className="project-ghost" type="button" aria-hidden="true" tabIndex={-1}>
@@ -132,7 +139,7 @@ export default function ProjectCard({ title, desc, tags = [], url, status = 'En 
 							</button>
 						)}
 					</div>
-				</div>
+				</footer>
 			</div>
 
 			<style jsx>{`
@@ -145,186 +152,181 @@ export default function ProjectCard({ title, desc, tags = [], url, status = 'En 
 					--glass-border: rgba(100, 130, 160, 0.06);
 				}
 
+				/* Outer card: deeper neumorphism but neutral so inner parts stand out */
 				.project-card {
 					position: relative;
 					border-radius: 18px;
-					/* Slightly reduced outer padding in favor of inner padding for predictable spacing */
-					padding: 18px;
+					padding: 8px;
 					background: linear-gradient(180deg, var(--card-a), var(--card-b));
 					border: 1px solid var(--glass-border);
 					color: var(--muted-2);
-					box-shadow: inset 6px 6px 16px rgba(2, 6, 18, 0.52), inset -6px -6px 14px rgba(18, 36, 58, 0.12), 12px 16px 34px rgba(2, 6, 18, 0.46);
-					display: flex;
-					flex-direction: column;
-					gap: 16px;
-					min-height: 170px;
-					transition: box-shadow 0.22s ease, transform 0.22s cubic-bezier(0.2, 0.9, 0.3, 1);
-					will-change: transform;
-					overflow: visible;
-					box-sizing: border-box;
+					box-shadow: 20px 26px 56px rgba(2, 6, 18, 0.66), -12px -12px 36px rgba(18, 36, 58, 0.08), inset 8px 8px 20px rgba(2, 6, 18, 0.44), inset -6px -6px 14px rgba(18, 36, 58, 0.08);
+					display: block;
+					transition: transform 260ms cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 260ms ease;
+					will-change: transform, box-shadow;
 				}
 
-				/* Priority badge (top-right) */
-				.status-badge {
-					position: absolute;
-					right: 14px;
-					top: 12px;
-					display: inline-flex;
-					align-items: center;
-					gap: 8px;
-					padding: 6px 10px;
-					border-radius: 999px;
-					background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(10, 20, 34, 0.1));
-					border: 1px solid rgba(255, 255, 255, 0.04);
-					box-shadow: 4px 6px 14px rgba(2, 6, 18, 0.28), -4px -4px 10px rgba(18, 36, 58, 0.06);
-					font-weight: 700;
-					font-size: 12px;
-					color: var(--muted-2);
-				}
-				.status-badge .status-dot {
-					width: 10px;
-					height: 10px;
-					border-radius: 99px;
-					box-shadow: 0 4px 8px rgba(0, 0, 0, 0.18);
-					background: #f59e0b;
-				}
-				.status-enden-desarrollo .status-dot,
-				.status-en-desarrollo .status-dot {
-					background: #f59e0b;
-				}
-				.status-producción .status-dot,
-				.status-produccion .status-dot {
-					background: #10b981;
-				}
-				.status-beta .status-dot {
-					background: #06b6d4;
-				}
-				.status-archivado .status-dot {
-					background: #9ca3af;
-				}
-
-				/* inner layout: added padding to ensure content never touches the border */
+				/* inner surface where content sits (lighter, elevated) */
 				.card-inner {
 					display: flex;
 					flex-direction: column;
 					gap: 14px;
-					width: 100%;
-					padding: 12px; /* inner padding for breathing room */
+					padding: 16px;
 					border-radius: 12px;
-					box-sizing: border-box;
-					background: transparent;
+					background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+					box-shadow: 8px 10px 26px rgba(2, 6, 18, 0.42), -6px -6px 16px rgba(18, 36, 58, 0.06), inset 3px 3px 10px rgba(0, 0, 0, 0.18), inset -3px -3px 10px rgba(255, 255, 255, 0.02);
 				}
 
+				/* === HEAD: grid layout to align left/right consistently === */
 				.card-head {
-					display: flex;
-					gap: 14px;
-					align-items: flex-start;
+					display: grid;
+					grid-template-columns: 1fr auto;
+					gap: 12px;
+					align-items: start;
 				}
+
+				.head-left {
+					display: flex;
+					gap: 12px;
+					align-items: flex-start;
+					min-width: 0;
+				}
+
 				.accent {
 					width: 12px;
 					height: 52px;
 					border-radius: 10px;
 					background: linear-gradient(180deg, var(--accent-soft), #06b6d4);
-					box-shadow: 0 10px 26px rgba(91, 107, 247, 0.1), 0 -6px 12px rgba(6, 182, 212, 0.03);
+					box-shadow: 0 10px 26px rgba(91, 107, 247, 0.12), 0 -6px 12px rgba(6, 182, 212, 0.03);
 					flex-shrink: 0;
 				}
 
-				.head-content {
+				.title-wrap {
 					display: flex;
 					flex-direction: column;
 					gap: 6px;
 					min-width: 0;
 				}
+
 				.proj-title {
 					margin: 0;
-					font-size: 1.05rem;
 					font-weight: 800;
+					font-size: 1.05rem;
+					line-height: 1.06;
 					color: var(--muted-2);
-					white-space: nowrap;
-					overflow: hidden;
-					text-overflow: ellipsis;
-				}
-				.proj-sub {
-					margin: 0;
-					font-size: 0.78rem;
-					color: var(--muted);
-					font-weight: 700;
-					opacity: 0.9;
+					word-break: break-word;
 				}
 
-				/* Body: description + meta row */
+				.proj-sub {
+					margin: 0;
+					font-size: 0.82rem;
+					color: var(--muted);
+					font-weight: 700;
+					opacity: 0.95;
+				}
+
+				/* status area (now within flow, right aligned) */
+				.status-wrap {
+					display: inline-flex;
+					align-items: center;
+					gap: 10px;
+					padding: 6px 10px;
+					border-radius: 999px;
+					background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(10, 20, 34, 0.06));
+					border: 1px solid rgba(255, 255, 255, 0.02);
+					box-shadow: 8px 10px 26px rgba(2, 6, 18, 0.18), -6px -6px 12px rgba(18, 36, 58, 0.06);
+					font-weight: 700;
+					font-size: 12px;
+					color: var(--muted-2);
+					min-width: 108px;
+					justify-content: center;
+				}
+
+				.status-dot {
+					width: 10px;
+					height: 10px;
+					border-radius: 50%;
+					background: #f59e0b;
+					box-shadow: 0 4px 8px rgba(0, 0, 0, 0.28);
+				}
+				.status-produccion .status-dot,
+				.status-producción .status-dot {
+					background: #10b981;
+				}
+				.status-en-desarrollo .status-dot {
+					background: #f59e0b;
+				}
+				.status-beta .status-dot {
+					background: #06b6d4;
+				}
+				.status-archivado .status-dot,
+				.status-arquivado .status-dot {
+					background: #9ca3af;
+				}
+
+				/* === BODY === */
 				.proj-body {
 					display: flex;
 					flex-direction: column;
 					gap: 12px;
-					padding: 6px 2px; /* subtle padding inside body */
 				}
 
 				.proj-desc {
 					margin: 0;
 					color: var(--muted);
 					font-size: 0.98rem;
-					line-height: 1.45;
-					max-width: 72ch;
-					opacity: 0.98;
-					/* ensure text doesn't touch right edge on small screens */
-					padding-right: 6px;
+					line-height: 1.55;
 				}
 
-				.proj-meta {
+				.meta-row {
 					display: flex;
-					gap: 12px;
-					align-items: center;
 					justify-content: space-between;
-					padding-top: 4px;
-				}
-				.meta-left {
-					flex: 1;
-					min-width: 0;
-				}
-				.meta-right {
-					width: 72px;
-					display: flex;
 					align-items: center;
-					justify-content: center;
 				}
 
+				.meta-right {
+					display: flex;
+					align-items: center;
+					gap: 8px;
+				}
+
+				/* mini preview cube (neumorphic) */
 				.mini-neo {
-					width: 64px;
+					width: 78px;
 					height: 48px;
-					border-radius: 10px;
-					background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(10, 20, 34, 0.08));
-					box-shadow: inset 4px 4px 10px rgba(2, 6, 18, 0.28), inset -4px -4px 8px rgba(18, 36, 58, 0.06);
+					border-radius: 12px;
 					padding: 8px;
 					display: flex;
 					flex-direction: column;
 					gap: 6px;
-					align-items: flex-start;
 					justify-content: center;
+					background: linear-gradient(180deg, rgba(255, 255, 255, 0.018), rgba(10, 20, 34, 0.06));
+					box-shadow: inset 4px 4px 10px rgba(2, 6, 18, 0.28), inset -4px -4px 8px rgba(18, 36, 58, 0.06), 6px 8px 20px rgba(2, 6, 18, 0.24);
 				}
 				.mini-line {
 					height: 6px;
 					width: 100%;
-					background: rgba(255, 255, 255, 0.06);
 					border-radius: 6px;
+					background: linear-gradient(90deg, rgba(99, 102, 241, 0.06), rgba(6, 182, 212, 0.04));
 				}
 				.mini-line.short {
-					width: 60%;
+					width: 62%;
 				}
 				.mini-dot {
 					width: 8px;
 					height: 8px;
-					border-radius: 99px;
-					background: rgba(255, 255, 255, 0.08);
+					border-radius: 999px;
+					background: rgba(99, 102, 241, 0.08);
 				}
 
+				/* === FOOT (tags + actions) === */
 				.card-foot {
 					display: flex;
-					gap: 16px;
-					align-items: center;
+					gap: 12px;
 					justify-content: space-between;
-					margin-top: auto;
-					padding-top: 8px;
+					align-items: center;
+					border-top: 1px solid rgba(255, 255, 255, 0.02);
+					padding-top: 12px;
 				}
 
 				.proj-tags {
@@ -332,131 +334,125 @@ export default function ProjectCard({ title, desc, tags = [], url, status = 'En 
 					gap: 10px;
 					flex-wrap: wrap;
 					align-items: center;
-					list-style: none;
 					margin: 0;
 					padding: 0;
+					list-style: none;
 				}
 
 				.proj-tag {
 					display: inline-flex;
-					gap: 10px;
+					gap: 8px;
 					align-items: center;
-					padding: 8px 12px;
+					padding: 8px 10px;
 					border-radius: 999px;
-					background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(10, 20, 34, 0.12));
+					background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(10, 20, 34, 0.06));
 					border: 1px solid rgba(255, 255, 255, 0.02);
 					box-shadow: inset 3px 3px 8px rgba(2, 6, 18, 0.38), inset -3px -3px 8px rgba(18, 36, 58, 0.06);
 					font-size: 13px;
 					font-weight: 700;
 					color: var(--muted-2);
-					transition: transform 160ms ease, box-shadow 160ms ease;
-					white-space: nowrap;
-				}
-				.proj-tag:focus,
-				.proj-tag:hover {
-					transform: translateY(-3px);
-					box-shadow: inset 2px 2px 6px rgba(2, 6, 18, 0.45), 6px 8px 18px rgba(2, 6, 18, 0.12);
 				}
 
 				.tag-badge {
 					display: inline-flex;
 					align-items: center;
 					justify-content: center;
-					width: 40px;
-					height: 28px;
-					border-radius: 10px;
+					width: 36px;
+					height: 26px;
+					border-radius: 8px;
 					padding: 2px;
 					flex-shrink: 0;
 				}
+
 				.tag-icon {
-					width: 24px;
-					height: 16px;
+					width: 22px;
+					height: 14px;
 					object-fit: contain;
 					display: block;
-					filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.12));
 				}
+
 				.tag-initials {
 					display: inline-grid;
 					place-items: center;
-					width: 30px;
-					height: 22px;
-					border-radius: 8px;
+					width: 28px;
+					height: 20px;
+					border-radius: 6px;
 					color: #fff;
 					font-weight: 800;
-					font-size: 12px;
-					box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+					font-size: 11px;
+					box-shadow: 0 6px 10px rgba(0, 0, 0, 0.12);
 				}
+
 				.tag-label {
 					display: inline-block;
 					color: var(--muted-2);
-					max-width: 140px;
+					max-width: 120px;
 					overflow: hidden;
 					text-overflow: ellipsis;
 				}
 
 				.actions {
 					display: flex;
-					gap: 10px;
+					gap: 8px;
 					align-items: center;
 				}
-				.project-link,
-				.project-ghost {
+
+				.project-link {
 					display: inline-flex;
+					gap: 8px;
 					align-items: center;
-					gap: 10px;
-					padding: 10px 16px;
-					border-radius: 999px;
-					font-weight: 800;
-					font-size: 0.95rem;
+					padding: 8px 12px;
+					border-radius: 10px;
+					font-weight: 700;
+					font-size: 0.92rem;
 					text-decoration: none;
 					cursor: pointer;
 					border: 1px solid rgba(255, 255, 255, 0.06);
-					background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(10, 20, 34, 0.12));
+					background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(10, 20, 34, 0.08));
 					color: var(--muted-2);
-					box-shadow: 8px 10px 26px rgba(2, 6, 18, 0.18), -6px -6px 12px rgba(18, 36, 58, 0.06);
-					transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+					box-shadow: 8px 10px 20px rgba(2, 6, 18, 0.18), -6px -6px 12px rgba(18, 36, 58, 0.06);
 				}
-				.project-link:hover,
-				.project-link:focus {
-					transform: translateY(-5px) scale(1.01);
-					box-shadow: 20px 22px 56px rgba(3, 10, 30, 0.6);
+
+				.project-link svg {
+					opacity: 0.95;
+				}
+
+				.project-link:hover {
+					transform: translateY(-4px);
+					box-shadow: 24px 26px 66px rgba(3, 10, 30, 0.6);
 				}
 
 				.project-ghost {
 					opacity: 0.6;
 					pointer-events: none;
+					padding: 8px 12px;
+					border-radius: 10px;
+					background: transparent;
+					border: none;
+					color: var(--muted-2);
 				}
 
 				/* responsive */
-				@media (max-width: 640px) {
-					.project-card {
-						padding: 14px;
-						min-height: 140px;
+				@media (max-width: 720px) {
+					.card-head {
+						grid-template-columns: 1fr;
 					}
-					.card-inner {
-						padding: 10px;
+					.status-wrap {
+						justify-self: start;
 					}
-					.accent {
-						height: 42px;
-						width: 10px;
+					.mini-neo {
+						width: 64px;
+						height: 40px;
 					}
-					.proj-tag {
-						padding: 7px 10px;
-						font-size: 12px;
+					.proj-desc {
+						font-size: 0.96rem;
 					}
-					.tag-badge {
-						width: 34px;
-						height: 24px;
-					}
-					.status-badge {
-						right: 10px;
-						top: 8px;
-						padding: 5px 8px;
-						font-size: 11px;
+					.tag-label {
+						max-width: 90px;
 					}
 				}
 
-				/* light mode variant */
+				/* light mode */
 				@media (prefers-color-scheme: light) {
 					:root {
 						--card-a: #f3f6ff;
@@ -466,25 +462,20 @@ export default function ProjectCard({ title, desc, tags = [], url, status = 'En 
 					}
 					.project-card {
 						background: linear-gradient(180deg, var(--card-b), var(--card-a));
-						color: var(--muted-2);
-						border: 1px solid rgba(255, 255, 255, 0.6);
 						box-shadow: inset 6px 6px 12px rgba(163, 177, 198, 0.08), inset -6px -6px 12px rgba(255, 255, 255, 0.95), 6px 6px 16px rgba(124, 139, 156, 0.08);
+						color: var(--muted-2);
+					}
+					.card-inner {
+						background: linear-gradient(180deg, #ffffff, #f3f6ff);
 					}
 					.proj-tag {
 						background: linear-gradient(180deg, #fff, #f3f6ff);
 						color: #334155;
-						border: 1px solid rgba(255, 255, 255, 0.6);
-					}
-					.status-badge {
-						background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(240, 243, 255, 0.9));
-						color: #0f172a;
-						border: 1px solid rgba(255, 255, 255, 0.6);
 					}
 				}
 
 				@media (prefers-reduced-motion: reduce) {
 					.project-card,
-					.proj-tag,
 					.project-link {
 						transition: none !important;
 					}
@@ -494,9 +485,31 @@ export default function ProjectCard({ title, desc, tags = [], url, status = 'En 
 	);
 }
 
+/* helpers */
 function slugify(s: string) {
 	return s
 		.toLowerCase()
 		.replace(/\s+/g, '-')
 		.replace(/[^\w-]/g, '');
+}
+
+/** convierte hex a rgba con alpha */
+function hexWithAlpha(hex: string, alpha = 0.12) {
+	try {
+		const h = hex.replace('#', '');
+		const full =
+			h.length === 3
+				? h
+						.split('')
+						.map((c) => c + c)
+						.join('')
+				: h;
+		const bigint = parseInt(full, 16);
+		const r = (bigint >> 16) & 255;
+		const g = (bigint >> 8) & 255;
+		const b = bigint & 255;
+		return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+	} catch {
+		return `rgba(124,139,156,${alpha})`;
+	}
 }
