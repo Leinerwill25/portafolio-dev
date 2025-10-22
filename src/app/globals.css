@@ -1,0 +1,377 @@
+/* En lugar de @tailwind base */
+@import 'tailwindcss/preflight';
+
+/* En lugar de @tailwind components */
+@import 'tailwindcss/theme';
+
+/* En lugar de @tailwind utilities */
+@import 'tailwindcss/utilities';
+
+/* ===== Neumorphism reusable tokens ===== */
+.neo-card {
+	background: var(--neo-surface);
+	border-radius: 36px;
+	border: 1px solid var(--neo-border-soft);
+	box-shadow: -6px -6px 16px var(--neo-light-shadow), 6px 6px 16px var(--neo-dark-shadow);
+}
+
+/* inner pill inputs */
+.neo-input {
+	background: var(--neo-surface);
+	border-radius: 9999px;
+	border: 1px solid rgba(230, 238, 248, 0.6); /* no white */
+	box-shadow: inset 6px 6px 14px rgba(124, 139, 156, 0.45), inset -6px -6px 14px rgba(230, 238, 248, 0.95);
+	padding-left: 1.5rem;
+	padding-right: 1.5rem;
+	height: 56px;
+	transition: box-shadow 0.18s ease, transform 0.14s ease;
+	color: var(--neo-text);
+}
+
+/* textarea variant (rounded but taller) */
+.neo-textarea {
+	min-height: 96px;
+	border-radius: 20px;
+	padding-top: 0.9rem;
+	padding-bottom: 0.9rem;
+}
+
+/* Input focus */
+.neo-input:focus,
+.neo-textarea:focus {
+	outline: none;
+	transform: translateY(-1px);
+	box-shadow: 0 10px 30px rgba(161, 123, 255, 0.08), inset 3px 3px 8px rgba(124, 139, 156, 0.25), inset -3px -3px 8px rgba(230, 238, 248, 0.9); /* highlight frio */
+	border: 1px solid rgba(161, 123, 255, 0.18);
+}
+
+/* Call-to-action pill (lilac) */
+.neo-cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 0.5rem;
+	padding: 0.75rem 1.25rem;
+	border-radius: 9999px;
+	color: white;
+	font-weight: 700;
+	background: linear-gradient(180deg, var(--neo-lilac-1), var(--neo-lilac-2));
+	box-shadow: 6px 12px 26px rgba(161, 123, 255, 0.18), -6px -6px 16px rgba(230, 238, 248, 0.8);
+	border: 1px solid rgba(230, 238, 248, 0.25);
+	transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.neo-cta:active {
+	transform: translateY(1px) scale(0.998);
+	box-shadow: inset 6px 6px 14px rgba(0, 0, 0, 0.06);
+}
+
+/* small decorative avatar card */
+.neo-avatar {
+	width: 96px;
+	height: 96px;
+	border-radius: 18px;
+	overflow: hidden;
+	box-shadow: inset 6px 6px 12px rgba(124, 139, 156, 0.18), inset -6px -6px 12px rgba(230, 238, 248, 0.95);
+	background: linear-gradient(180deg, #ecf9ff, #eef6fb); /* sustituye whites por azul frío */
+}
+
+/* Card footer grounding shadow (soft "floor" shadow) */
+.neo-floor {
+	filter: blur(10px);
+	opacity: 0.55;
+	box-shadow: 0 18px 30px rgba(124, 139, 156, 0.08);
+	border-radius: 18px;
+}
+
+/* subtle divider used across the UI */
+.neo-divider {
+	height: 1px;
+	border-radius: 9999px;
+	background: linear-gradient(90deg, rgba(230, 238, 248, 0.6), rgba(0, 0, 0, 0.03), rgba(230, 238, 248, 0.6));
+	opacity: 0.6;
+}
+
+/* utilities to align with tailwind spacing consistency (optional) */
+.u-card-padding {
+	padding: 2rem;
+}
+.u-card-padding-sm {
+	padding: 1rem;
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+	.neo-card {
+		border-radius: 24px;
+	}
+	.neo-avatar {
+		width: 72px;
+		height: 72px;
+	}
+}
+
+/* Accessibility: prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+	.neo-cta,
+	.neo-input {
+		transition: none !important;
+	}
+}
+
+/* Dark minimal fallback (keep the structure but muted) */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--neo-surface: #0b1220;
+		--neo-light-shadow: rgba(20, 28, 45, 0.02); /* tiny highlight, not pure white */
+		--neo-dark-shadow: rgba(0, 0, 0, 0.6);
+		--neo-border-soft: rgba(230, 238, 248, 0.03); /* very subtle cold tone */
+		--neo-text: #e6eef8;
+	}
+	.neo-card {
+		box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.6), -6px -6px 16px rgba(20, 28, 45, 0.02);
+	}
+	.neo-input {
+		box-shadow: inset 6px 6px 12px rgba(0, 0, 0, 0.6), inset -6px -6px 12px rgba(20, 28, 45, 0.02);
+		color: var(--neo-text);
+	}
+}
+
+/* --- Tokens globales para neumorfismo oscuro --- */
+:root {
+	--neo-bg-a: #041229;
+	--neo-bg-b: #071032;
+	--neo-surface: #0b1220; /* card surface */
+	--neo-accent: #6366f1; /* indigo */
+	--neo-accent-2: #06b6d4; /* teal */
+	--neo-text: #e6f0ff;
+	--neo-light: rgba(230, 238, 248, 0.06); /* subtle glow */
+	--neo-muted: #9fb4d4;
+	--neo-shadow-dark: rgba(3, 8, 20, 0.6);
+	--neo-shadow-soft: rgba(18, 36, 58, 0.12);
+}
+
+/* Page background: large gradient + soft neumorphic shapes (blobs) */
+.neo-page {
+	background: radial-gradient(1200px 600px at 10% 10%, rgba(12, 30, 50, 0.28), transparent 12%), radial-gradient(900px 450px at 90% 90%, rgba(6, 20, 36, 0.22), transparent 10%), linear-gradient(180deg, var(--neo-bg-a), var(--neo-bg-b));
+	color: var(--neo-text);
+	position: relative;
+	overflow: hidden;
+	transition: background 400ms ease;
+}
+
+/* Floating blobs — decorative and animated */
+.neo-page::before,
+.neo-page::after,
+.neo-page .neo-blob {
+	content: '';
+	position: absolute;
+	filter: blur(40px);
+	opacity: 0.24;
+	mix-blend-mode: screen;
+	pointer-events: none;
+}
+
+/* two pseudo blobs */
+.neo-page::before {
+	width: 560px;
+	height: 420px;
+	left: -8%;
+	top: -6%;
+	background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.22), rgba(6, 182, 212, 0.06) 40%, transparent 60%);
+	animation: blob-1 14s infinite ease-in-out;
+}
+.neo-page::after {
+	width: 640px;
+	height: 520px;
+	right: -12%;
+	bottom: -8%;
+	background: radial-gradient(circle at 70% 70%, rgba(6, 182, 212, 0.16), rgba(99, 102, 241, 0.06) 40%, transparent 60%);
+	animation: blob-2 18s infinite ease-in-out;
+}
+
+/* small floating blob element to add depth (in DOM) */
+.neo-page .neo-blob {
+	width: 220px;
+	height: 220px;
+	right: 12%;
+	top: 18%;
+	background: radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.18), rgba(6, 182, 212, 0.05) 50%, transparent 70%);
+	animation: blob-3 12s infinite ease-in-out;
+	border-radius: 50%;
+	transform-origin: center;
+}
+
+/* blob animations */
+@keyframes blob-1 {
+	0% {
+		transform: translate3d(0, 0, 0) scale(1);
+		opacity: 0.22;
+	}
+	33% {
+		transform: translate3d(20px, -20px, 0) scale(1.06);
+		opacity: 0.26;
+	}
+	66% {
+		transform: translate3d(-10px, 10px, 0) scale(0.98);
+		opacity: 0.22;
+	}
+	100% {
+		transform: translate3d(0, 0, 0) scale(1);
+		opacity: 0.22;
+	}
+}
+@keyframes blob-2 {
+	0% {
+		transform: translate3d(0, 0, 0) scale(1);
+		opacity: 0.18;
+	}
+	33% {
+		transform: translate3d(-30px, 20px, 0) scale(1.05);
+		opacity: 0.22;
+	}
+	66% {
+		transform: translate3d(10px, -10px, 0) scale(0.96);
+		opacity: 0.18;
+	}
+	100% {
+		transform: translate3d(0, 0, 0) scale(1);
+		opacity: 0.18;
+	}
+}
+@keyframes blob-3 {
+	0% {
+		transform: translate3d(0, 0, 0) scale(1);
+		opacity: 0.2;
+	}
+	50% {
+		transform: translate3d(8px, -12px, 0) scale(1.08);
+		opacity: 0.26;
+	}
+	100% {
+		transform: translate3d(0, 0, 0) scale(1);
+		opacity: 0.2;
+	}
+}
+
+/* GLOBAL: neumorphic card baseline (dark) — used by neo-card, project-card, skill-card, etc */
+.neo-card,
+.project-card,
+.skill-card,
+.about-article {
+	background: linear-gradient(180deg, rgba(12, 20, 36, 0.95), rgba(6, 14, 28, 0.95));
+	border-radius: 16px;
+	border: 1px solid rgba(80, 110, 135, 0.08);
+	box-shadow: inset 6px 6px 14px rgba(2, 6, 18, 0.56), inset -6px -6px 14px rgba(18, 36, 58, 0.12), 10px 14px 30px rgba(2, 6, 18, 0.45);
+	transition: transform 260ms cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 260ms ease, background 260ms ease;
+	will-change: transform, box-shadow;
+}
+
+/* subtle hover 'lift' + accent glow */
+.neo-card:hover,
+.project-card:hover,
+.skill-card:hover,
+.about-article:hover {
+	transform: translateY(-8px);
+	box-shadow: inset 3px 3px 10px rgba(2, 6, 18, 0.5), inset -3px -3px 10px rgba(18, 36, 58, 0.12), 24px 28px 60px rgba(3, 8, 30, 0.62), -10px -10px 30px rgba(18, 36, 58, 0.06);
+	background: linear-gradient(180deg, rgba(10, 18, 34, 0.98), rgba(5, 12, 24, 0.98));
+}
+
+/* Focus-visible for keyboard accessibility */
+.neo-card:focus,
+.project-card:focus,
+.skill-card:focus,
+.about-article:focus {
+	outline: 3px solid rgba(99, 102, 241, 0.14);
+	outline-offset: 6px;
+}
+
+/* Accent glow effect for interactive elements inside cards */
+.neo-card .neo-cta,
+.project-card .proj-tag,
+.skill-card .skill-card,
+.neo-card .neo-avatar-lg {
+	transition: box-shadow 200ms ease, transform 200ms ease;
+}
+.neo-card .neo-cta:hover,
+.project-card .proj-tag:hover,
+.skill-card:hover .skill-label {
+	box-shadow: 0 10px 30px rgba(99, 102, 241, 0.06), -8px -8px 24px rgba(6, 182, 212, 0.02);
+	transform: translateY(-3px);
+}
+
+/* small parallax on hover for inner elements (subtle) */
+.neo-card .card-inner,
+.project-card .card-inner {
+	transform-origin: center;
+	transition: transform 350ms cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+.neo-card:hover .card-inner,
+.project-card:hover .card-inner {
+	transform: translateY(-3px);
+}
+
+/* Make badges/chips follow palette (dark glass) */
+.proj-tag,
+.skill-card .skill-label,
+.neo-card .badge,
+.contact-card .social {
+	background: linear-gradient(180deg, rgba(6, 16, 28, 0.7), rgba(8, 24, 40, 0.65));
+	color: var(--neo-text);
+	border: 1px solid rgba(80, 110, 135, 0.06);
+	box-shadow: inset 3px 3px 8px rgba(2, 6, 18, 0.36), inset -3px -3px 8px rgba(18, 36, 58, 0.06);
+}
+
+/* ProjectCard fine-tuning */
+.project-card {
+	min-height: 140px;
+	display: flex;
+	flex-direction: column;
+}
+.project-card .accent {
+	box-shadow: 0 6px 18px rgba(99, 102, 247, 0.06);
+}
+
+/* Make text colors consistent */
+.text-neo-light {
+	color: var(--neo-text);
+}
+.text-neo-muted {
+	color: var(--neo-muted);
+}
+
+/* floating subtle separators */
+.neo-divider {
+	height: 1px;
+	background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.03));
+	opacity: 0.06;
+	border-radius: 999px;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+	.neo-page::before,
+	.neo-page::after,
+	.neo-page .neo-blob,
+	.neo-card,
+	.project-card,
+	.skill-card {
+		animation: none !important;
+		transition: none !important;
+	}
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+	.neo-page::before,
+	.neo-page::after {
+		display: none;
+	}
+	.neo-page .neo-blob {
+		display: none;
+	}
+	.neo-card,
+	.project-card {
+		padding: 14px;
+		border-radius: 12px;
+	}
+}
