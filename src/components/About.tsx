@@ -48,7 +48,7 @@ export default function AboutArticle({ about }: Props) {
 								Contactar
 							</a>
 
-							<a href="/CV.pdf" className="download-btn" aria-label="Descargar CV" rel="noopener noreferrer" target="_blank">
+							<a href="/CV Dev.pdf" className="download-btn" aria-label="Descargar CV" rel="noopener noreferrer" target="_blank">
 								Descargar CV
 							</a>
 						</div>
