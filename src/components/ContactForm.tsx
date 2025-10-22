@@ -1,13 +1,23 @@
-// src/components/ContactSection.tsx
+// src/components/ContactForm.tsx
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type FormState = { name: string; email: string; message: string };
+type Notice = { type: 'success' | 'error'; text: string } | null;
 
-export default function ContactSection() {
+function getErrorMessage(err: unknown): string {
+	if (err instanceof Error) return err.message;
+	try {
+		return JSON.stringify(err);
+	} catch {
+		return String(err);
+	}
+}
+
+export default function ContactForm() {
 	const [form, setForm] = useState<FormState>({ name: '', email: '', message: '' });
 	const [sending, setSending] = useState(false);
-	const [notice, setNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+	const [notice, setNotice] = useState<Notice>(null);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		const { name, value } = e.target;
@@ -17,12 +27,48 @@ export default function ContactSection() {
 	const handleSubmit = async (ev: React.FormEvent) => {
 		ev.preventDefault();
 		setNotice(null);
+
+		// Validación simple
 		if (!form.name || !form.email || !form.message) {
 			setNotice({ type: 'error', text: 'Todos los campos son obligatorios.' });
 			return;
 		}
 
+		// Validación básica de email
+		if (!/\S+@\S+\.\S+/.test(form.email)) {
+			setNotice({ type: 'error', text: 'Por favor, ingresa un email válido.' });
+			return;
+		}
+
 		setSending(true);
+
+		// Helper local para convertir la respuesta parseada a string seguro
+		const parsedToMessage = (p: unknown): string | null => {
+			if (p == null) return null;
+			if (typeof p === 'string') return p;
+			if (typeof p === 'object') {
+				// Si tiene campo 'error', úsalo
+				const asRecord = p as Record<string, unknown>;
+				if ('error' in asRecord) {
+					const v = asRecord.error;
+					if (typeof v === 'string') return v;
+					try {
+						return JSON.stringify(v);
+					} catch {
+						return String(v);
+					}
+				}
+				// Si es objeto simple, intenta stringify
+				try {
+					return JSON.stringify(asRecord);
+				} catch {
+					return String(asRecord);
+				}
+			}
+			// para otros tipos (number, boolean...)
+			return String(p);
+		};
+
 		try {
 			const res = await fetch('/api/contact', {
 				method: 'POST',
@@ -30,18 +76,30 @@ export default function ContactSection() {
 				body: JSON.stringify(form),
 			});
 
-			const json = await res.json().catch(() => null);
+			// Intentamos parsear JSON; si falla, fallback a texto
+			let parsed: unknown = null;
+			try {
+				parsed = await res.json();
+			} catch {
+				try {
+					parsed = await res.text();
+				} catch {
+					parsed = null;
+				}
+			}
+
 			if (!res.ok) {
-				// intenta leer mensaje desde body
-				const errMsg = (json && json.error) || (typeof json === 'string' && json) || 'Error al enviar. Intenta más tarde.';
-				throw new Error(errMsg);
+				const bodyMessage = parsedToMessage(parsed);
+				const errMsg = bodyMessage ?? `Error ${res.status}`;
+				throw new Error(errMsg); // errMsg es siempre string aquí
 			}
 
 			setNotice({ type: 'success', text: 'Mensaje enviado. ¡Gracias!' });
 			setForm({ name: '', email: '', message: '' });
-		} catch (err: any) {
-			console.error('Contact submit error', err);
-			setNotice({ type: 'error', text: err?.message || 'Error al enviar. Intenta más tarde.' });
+		} catch (err: unknown) {
+			const message = getErrorMessage(err);
+			console.error('ContactForm submit error:', message);
+			setNotice({ type: 'error', text: message || 'Error al enviar. Intenta más tarde.' });
 		} finally {
 			setSending(false);
 		}
