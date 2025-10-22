@@ -139,31 +139,32 @@ export default function ContactForm() {
 			</div>
 
 			<div className="footer">
-				<button type="submit" className={`neo-cta-futuristic ${sending ? 'loading' : ''} ${notice?.type === 'success' ? 'success' : ''}`} disabled={sending} aria-busy={sending} aria-live="polite">
-					<span className="neo-border" aria-hidden />
-
-					<span className="neo-inner" aria-hidden={sending}>
-						<svg className="icon-plane" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-							<path d="M2 21l20-9L2 3l6 7-6 11z" fill="currentColor" opacity="0.95" />
-						</svg>
-						<span className="label">{sending ? 'Enviando' : notice?.type === 'success' ? 'Enviado' : 'Enviar'}</span>
-						<svg className="icon-arrow" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-							<path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+				<button type="submit" className={`neo-minimal-btn ${sending ? 'loading' : ''} ${notice?.type === 'success' ? 'success' : ''}`} disabled={sending} aria-busy={sending} aria-live="polite">
+					{/* Flecha: se oculta cuando loading o success */}
+					<span className="icon-wrap" aria-hidden={sending || notice?.type === 'success' ? 'true' : 'false'}>
+						<svg className="icon-arrow" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+							<path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
 						</svg>
 					</span>
 
-					<span className="neo-spinner" aria-hidden={!sending}>
-						<svg viewBox="0 0 50 50" width="20" height="20" aria-hidden="true">
-							<circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth="4" strokeOpacity="0.14" fill="none" />
-							<path d="M45 25a20 20 0 00-6-14" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="none" />
-						</svg>
-					</span>
+					{/* Spinner: aparece SOLO cuando sending === true */}
+					{sending && (
+						<span className="spinner" role="status" aria-hidden={!sending}>
+							<svg viewBox="0 0 50 50" width="20" height="20" aria-hidden="true">
+								<circle cx="25" cy="25" r="20" stroke="currentColor" strokeWidth="4" opacity="0.18" fill="none" />
+								<path d="M45 25a20 20 0 00-6-14" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="none" />
+							</svg>
+						</span>
+					)}
 
-					<span className="neo-success" aria-hidden={!(notice?.type === 'success')}>
-						<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-							<path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-						</svg>
-					</span>
+					{/* Check: aparece SOLO cuando success AND not sending */}
+					{notice?.type === 'success' && !sending && (
+						<span className="check" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+								<path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+							</svg>
+						</span>
+					)}
 				</button>
 			</div>
 
@@ -264,188 +265,134 @@ export default function ContactForm() {
 					justify-content: space-between;
 				}
 
-				/* ---------------- neo-cta-futuristic (new) ---------------- */
-				.neo-cta-futuristic {
-					--h: 54px;
+				.neo-minimal-btn {
 					position: relative;
-					display: inline-grid;
-					align-items: center;
-					grid-auto-flow: column;
-					gap: 12px;
-					min-width: 170px;
-					height: var(--h);
-					padding: 0 20px;
-					border-radius: 14px;
-					background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(10, 12, 20, 0.02));
-					color: #eaf6ff;
+					display: grid;
+					place-items: center;
+					width: 58px;
+					height: 58px;
+					border-radius: 18px;
+					background: var(--surface);
+					border: 1px solid rgba(255, 255, 255, 0.4);
+					box-shadow: 6px 6px 12px rgba(163, 177, 198, 0.15), -6px -6px 12px rgba(255, 255, 255, 0.8);
+					color: var(--text);
 					cursor: pointer;
-					border: none;
-					overflow: visible;
-					-webkit-tap-highlight-color: transparent;
-					transition: transform 220ms cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 220ms ease, filter 220ms ease;
-					box-shadow: 8px 10px 24px rgba(2, 8, 20, 0.42), -6px -6px 16px rgba(255, 255, 255, 0.02), inset 1px 1px 0 rgba(255, 255, 255, 0.02);
-				}
-
-				/* animated border (pseudo-element style but using inner span .neo-border to keep styled-jsx safe) */
-				.neo-cta-futuristic .neo-border {
-					position: absolute;
-					inset: -2px;
-					border-radius: 16px;
-					padding: 2px;
-					background: linear-gradient(90deg, rgba(99, 102, 241, 0.9), rgba(6, 182, 212, 0.85), rgba(99, 102, 241, 0.9));
-					-webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-					-webkit-mask-composite: xor;
-					mask-composite: exclude;
-					animation: border-slide 3.5s linear infinite;
-					filter: blur(8px);
-					opacity: 0.85;
-					pointer-events: none;
+					transition: box-shadow 0.25s ease, transform 0.25s ease, background 0.25s ease;
+					overflow: hidden; /* <-- importante para que nada "salga" fuera del botón */
 					z-index: 0;
 				}
-				@keyframes border-slide {
-					0% {
-						background-position: 0% 50%;
-					}
-					50% {
-						background-position: 100% 50%;
-					}
-					100% {
-						background-position: 0% 50%;
-					}
+
+				/* hover / active */
+				.neo-minimal-btn:hover:not([disabled]) {
+					transform: translateY(-3px);
+					box-shadow: 8px 8px 20px rgba(163, 177, 198, 0.25), -8px -8px 20px rgba(255, 255, 255, 0.9);
+				}
+				.neo-minimal-btn:active:not([disabled]) {
+					transform: translateY(1px);
+					box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.25), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
 				}
 
-				/* inner content sits above border */
-				.neo-cta-futuristic .neo-inner {
-					display: inline-flex;
-					gap: 10px;
-					align-items: center;
-					z-index: 1;
-					transform: translateZ(0);
+				/* Icon (arrow) - se oculta suavemente cuando loading o success */
+				.icon-wrap {
+					display: inline-grid;
+					place-items: center;
+					transition: opacity 180ms ease, transform 220ms ease;
 				}
-
-				.neo-cta-futuristic .icon-plane {
-					color: #bfe9ff;
-					opacity: 0.95;
-				}
-				.neo-cta-futuristic .icon-arrow {
-					color: #bfe9ff;
-					opacity: 0.9;
-				}
-
-				.neo-cta-futuristic .label {
-					font-weight: 800;
-					font-size: 14px;
-					letter-spacing: 0.01em;
-					color: #e6f6ff;
-				}
-
-				/* hover: neon glow + lift + slight skew for futuristic feel */
-				.neo-cta-futuristic:hover:not([disabled]) {
-					transform: translateY(-6px) scale(1.02) perspective(600px) rotateX(1deg);
-					box-shadow: 22px 24px 60px rgba(3, 10, 30, 0.6), -12px -12px 30px rgba(10, 20, 36, 0.06), inset 0 0 30px rgba(99, 102, 241, 0.06);
-					filter: saturate(1.05);
-				}
-
-				/* loading state: dim inner, show spinner */
-				.neo-cta-futuristic.loading {
-					cursor: progress;
-					transform: none;
-				}
-				.neo-cta-futuristic .neo-spinner {
-					position: absolute;
-					left: 12px;
-					top: 50%;
-					transform: translateY(-50%) scale(0.9);
-					z-index: 2;
+				.icon-wrap[aria-hidden='true'] {
 					opacity: 0;
-					transition: opacity 160ms ease, transform 160ms ease;
-					color: #e6f6ff;
+					transform: scale(0.95);
+					pointer-events: none;
 				}
-				.neo-cta-futuristic.loading .neo-spinner {
-					opacity: 1;
-					transform: translateY(-50%) scale(1);
-					animation: spin 900ms linear infinite;
+
+				/* small arrow color + hover slide */
+				.icon-arrow {
+					color: var(--lilac-2);
+					opacity: 0.95;
+					transform: translateX(0);
+					transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
+				}
+				.neo-minimal-btn:hover .icon-arrow {
+					transform: translateX(4px);
+				}
+
+				/* Spinner centered and small: limited to button area and above icon */
+				.spinner {
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					width: 22px;
+					height: 22px;
+					display: grid;
+					place-items: center;
+					color: var(--lilac-2);
+					z-index: 2;
+					pointer-events: none;
+					animation: spin 1s linear infinite;
 				}
 				@keyframes spin {
 					to {
-						transform: translateY(-50%) rotate(360deg);
+						transform: translate(-50%, -50%) rotate(360deg);
 					}
 				}
 
-				/* success state: green pulse + icon */
-				.neo-cta-futuristic.success {
-					box-shadow: 0 8px 30px rgba(6, 95, 70, 0.12), inset 0 0 28px rgba(6, 95, 70, 0.04);
-					transform: translateY(-4px);
-				}
-				.neo-cta-futuristic.success .neo-success {
+				/* Check small and centered (doesn't cover external elements) */
+				.check {
 					position: absolute;
-					right: 12px;
 					top: 50%;
-					transform: translateY(-50%) scale(1);
-					color: #eafff4;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					width: 22px;
+					height: 22px;
+					display: grid;
+					place-items: center;
+					color: #047857; /* success green */
 					z-index: 2;
-					opacity: 1;
-					animation: success-pulse 1200ms ease;
+					pointer-events: none;
+					animation: pop 0.45s ease forwards;
 				}
-				@keyframes success-pulse {
+				@keyframes pop {
 					0% {
-						transform: translateY(-50%) scale(0.8);
+						transform: translate(-50%, -50%) scale(0.8);
 						opacity: 0;
 					}
-					40% {
-						transform: translateY(-50%) scale(1.15);
+					60% {
+						transform: translate(-50%, -50%) scale(1.12);
 						opacity: 1;
 					}
 					100% {
-						transform: translateY(-50%) scale(1);
+						transform: translate(-50%, -50%) scale(1);
 						opacity: 1;
 					}
 				}
 
-				/* ripple effect element */
-				.neo-cta-futuristic .ripple {
-					position: absolute;
-					width: 12px;
-					height: 12px;
-					background: rgba(255, 255, 255, 0.12);
-					border-radius: 50%;
-					transform: translate(-50%, -50%) scale(0.6);
-					pointer-events: none;
-					animation: ripple 600ms cubic-bezier(0.2, 0.9, 0.3, 1);
-					z-index: 2;
-					mix-blend-mode: screen;
-				}
-				@keyframes ripple {
-					to {
-						transform: translate(-50%, -50%) scale(10);
-						opacity: 0;
-					}
+				/* When success, adjust button bg/shadow slightly */
+				.neo-minimal-btn.success {
+					background: linear-gradient(180deg, #ecfdf5, #ccfbf1);
+					color: #047857;
+					box-shadow: 4px 4px 10px rgba(6, 95, 70, 0.12), -4px -4px 10px rgba(255, 255, 255, 0.9);
 				}
 
-				/* disabled visual */
-				.neo-cta-futuristic[disabled] {
+				/* Disabled */
+				.neo-minimal-btn[disabled] {
 					opacity: 0.6;
 					cursor: not-allowed;
-					transform: none !important;
-					filter: grayscale(0.08);
 				}
 
-				/* focus ring for keyboard */
-				.neo-cta-futuristic:focus {
-					outline: none;
-					box-shadow: 0 0 0 6px rgba(99, 102, 241, 0.08), 0 12px 30px rgba(3, 10, 30, 0.5);
-				}
-
-				/* small screen adjustments */
-				@media (max-width: 420px) {
-					.neo-cta-futuristic {
-						min-width: 140px;
-						padding: 0 14px;
-						--h: 48px;
-						border-radius: 12px;
+				/* Dark mode adjustments */
+				@media (prefers-color-scheme: dark) {
+					.neo-minimal-btn {
+						background: #0d1220;
+						color: #e6f6ff;
+						border: 1px solid rgba(255, 255, 255, 0.05);
+						box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.6), -6px -6px 14px rgba(255, 255, 255, 0.02);
 					}
-					.neo-cta-futuristic .label {
-						font-size: 13px;
+					.spinner {
+						color: var(--lilac-1);
+					}
+					.neo-minimal-btn.success {
+						background: linear-gradient(180deg, #065f46, #10b981);
+						color: #eafff4;
 					}
 				}
 

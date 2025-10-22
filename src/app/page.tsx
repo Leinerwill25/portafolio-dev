@@ -135,7 +135,7 @@ export default function Page(): React.ReactElement {
 
 							<div className="space-y-4">
 								{cv.experience.map((exp) => (
-									<div key={`${exp.company}-${exp.period}`} className="neo-card u-card-padding-sm">
+									<div key={`${exp.company}-${exp.period}`}>
 										<ExperienceItem title={`${exp.company} — ${exp.role}`} company={exp.company} dateRange={exp.period} bullets={exp.responsibilities} />
 									</div>
 								))}

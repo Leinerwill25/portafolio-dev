@@ -15,6 +15,9 @@ type Props = {
 };
 
 export default function ContactCard({ email = 'leinerwill25@gmail.com', phone = '+58 424 2070878', addressLines = ['Av. San Martin, Capuchino', 'Parroquia San Juan'], whatsapp = '584242070878', github = 'leinerwill25', instagram = 'syncwave_agency' }: Props) {
+	// Combine address lines into one string to allow wrapping and clamping
+	const fullAddress = addressLines.filter(Boolean).join(', ');
+
 	return (
 		<aside className="contact-card neo-card u-card-padding-sm" aria-labelledby="contact-quick-title">
 			<h4 id="contact-quick-title" className="title">
@@ -26,26 +29,24 @@ export default function ContactCard({ email = 'leinerwill25@gmail.com', phone = 
 					<span className="icon-wrap" aria-hidden="true">
 						<FiMail />
 					</span>
-					<span className="contact-text">{email}</span>
+					<span className="contact-text single-line">{email}</span>
 				</a>
 
 				<a className="contact-line" href={`tel:${phone.replace(/\s+/g, '')}`} aria-label={`Llamar a ${phone}`}>
 					<span className="icon-wrap" aria-hidden="true">
 						<FiPhone />
 					</span>
-					<span className="contact-text">{phone}</span>
+					<span className="contact-text single-line">{phone}</span>
 				</a>
 
-				<div className="contact-line contact-address" aria-hidden="false">
+				<div className="contact-line contact-address" aria-label={`Dirección: ${fullAddress}`}>
 					<span className="icon-wrap" aria-hidden="true">
 						<HiOutlineLocationMarker />
 					</span>
-					<span className="contact-text address-lines">
-						{addressLines.map((l, i) => (
-							<span key={i} className="addr-line">
-								{l}
-							</span>
-						))}
+
+					{/* Address text: permite hasta 2 líneas y luego muestra ellipsis */}
+					<span className="contact-text address-clamp" title={fullAddress}>
+						{fullAddress}
 					</span>
 				</div>
 			</address>
@@ -126,22 +127,43 @@ export default function ContactCard({ email = 'leinerwill25@gmail.com', phone = 
 					display: block;
 				}
 
+				/* Default single-line items (email, phone) keep nowrap + ellipsis */
 				.contact-text {
 					display: inline-block;
 					color: var(--muted-300, #cfe8ff);
 					font-weight: 600;
 					font-size: 0.92rem;
+				}
+
+				.single-line {
 					white-space: nowrap;
 					overflow: hidden;
 					text-overflow: ellipsis;
+					max-width: calc(100% - 28px); /* leave space for icon */
 				}
 
-				.contact-address .address-lines {
-					display: flex;
-					flex-direction: column;
-					gap: 2px;
+				/* ADDRESS: allow wrapping up to 2 lines, then ellipsis */
+				.contact-address .address-clamp {
+					display: -webkit-box;
+					-webkit-box-orient: vertical;
+					-webkit-line-clamp: 2; /* <= 2 lines */
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: normal; /* allow wrapping */
 					font-weight: 500;
 					color: var(--muted-400, #9fb4d4);
+					max-width: calc(100% - 28px); /* reserve space for icon */
+					line-height: 1.25;
+				}
+
+				/* Small tweak: if the card is narrow, allow 2 lines but slightly smaller font */
+				@media (max-width: 420px) {
+					.contact-card {
+						padding: 12px;
+					}
+					.contact-address .address-clamp {
+						font-size: 0.88rem;
+					}
 				}
 
 				.socials {
@@ -177,7 +199,6 @@ export default function ContactCard({ email = 'leinerwill25@gmail.com', phone = 
 					box-shadow: 10px 10px 28px rgba(2, 8, 20, 0.55), -6px -6px 18px rgba(12, 28, 44, 0.14);
 				}
 
-				/* colored icon backgrounds (subtle, coherent with dark palette) */
 				.social-whatsapp {
 					background: linear-gradient(180deg, rgba(37, 211, 102, 0.12), rgba(37, 211, 102, 0.06));
 					border: 1px solid rgba(37, 211, 102, 0.14);
@@ -189,16 +210,9 @@ export default function ContactCard({ email = 'leinerwill25@gmail.com', phone = 
 					color: #ffff;
 				}
 				.social-instagram {
-					/* subtle instagram gradient */
 					background: linear-gradient(180deg, rgba(225, 48, 108, 0.08), rgba(245, 130, 48, 0.06));
 					border: 1px solid rgba(245, 130, 48, 0.12);
 					color: #e4405f;
-				}
-
-				@media (max-width: 768px) {
-					.contact-card {
-						padding: 12px;
-					}
 				}
 			`}</style>
 		</aside>
