@@ -7,10 +7,18 @@ const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 	console.error('Faltan variables de entorno SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY');
-	// Note: en producción lanzaría error para evitar inserts mal formados
 }
 
 const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!, { auth: { persistSession: false } });
+
+function getErrorMessage(err: unknown): string {
+	if (err instanceof Error) return err.message;
+	try {
+		return JSON.stringify(err);
+	} catch {
+		return String(err);
+	}
+}
 
 export async function POST(req: Request) {
 	try {
@@ -38,8 +46,9 @@ export async function POST(req: Request) {
 		}
 
 		return NextResponse.json({ success: true }, { status: 201 });
-	} catch (err: any) {
-		console.error('POST /api/contact error', err);
-		return NextResponse.json({ error: err?.message || 'Error interno' }, { status: 500 });
+	} catch (err: unknown) {
+		const msg = getErrorMessage(err);
+		console.error('POST /api/contact error', msg);
+		return NextResponse.json({ error: msg || 'Error interno' }, { status: 500 });
 	}
 }
